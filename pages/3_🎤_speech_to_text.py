@@ -101,20 +101,33 @@ with voice:
             except Exception as e:
                 print(e)
                 st.warning("OpenAI API key Error. Replace your key.")
+with speechtoText:
+    uploaded_file=st.sidebar.file_uploader("Upload an audio file", type=["mp3", "wav", "ogg"])
+    if uploaded_file:
+        with open("uploaded_audio.wav", "wb") as f:
+            f.write(uploaded_file.read())
+        filename="uploaded_audio.wav"
+        audio_file = open(str(filename), "rb")
+        with st.spinner('Converting'):
+            try:
+                st.session_state['SpeechToText']=speechToText(audio_file)
+            except Exception as e:
+                print(e)
+                st.warning("OpenAI API key Error. Replace your key.")
 if st.session_state['VoiceRecording']:
-    with speechtoText:
-        uploaded_file=st.sidebar.file_uploader("Upload an audio file", type=["mp3", "wav", "ogg"])
-        if uploaded_file:
-            with open("uploaded_audio.wav", "wb") as f:
-                f.write(uploaded_file.read())
-            filename="uploaded_audio.wav"
-            audio_file = open(str(filename), "rb")
-            with st.spinner('Converting'):
-                try:
-                    st.session_state['SpeechToText']=speechToText(audio_file)
-                except Exception as e:
-                    print(e)
-                    st.warning("OpenAI API key Error. Replace your key.")
+    # with speechtoText:
+    #     uploaded_file=st.sidebar.file_uploader("Upload an audio file", type=["mp3", "wav", "ogg"])
+    #     if uploaded_file:
+    #         with open("uploaded_audio.wav", "wb") as f:
+    #             f.write(uploaded_file.read())
+    #         filename="uploaded_audio.wav"
+    #         audio_file = open(str(filename), "rb")
+    #         with st.spinner('Converting'):
+    #             try:
+    #                 st.session_state['SpeechToText']=speechToText(audio_file)
+    #             except Exception as e:
+    #                 print(e)
+    #                 st.warning("OpenAI API key Error. Replace your key.")
     with insta_button:
         if st.sidebar.button("Instagram", use_container_width=True):
             # global prompt_
