@@ -156,7 +156,7 @@ if st.session_state['VoiceRecording']:
 
 
 if st.session_state['VoiceRecording']:
-    st.header("Generated Voice")
+    st.header("Transcribed Text")
     message(st.session_state['VoiceRecording'])
 if st.session_state['SpeechToText']:
     st.header("Speech to Text")
