@@ -45,7 +45,7 @@ voice,col1,speechtoText,col3,col4=st.columns(5)
 
 with voice:
     if st.button("Voice Input", use_container_width=True):
-        stream =None
+        stream = None
         try:
             st.write("Listening...")
             p = pyaudio.PyAudio()
@@ -60,6 +60,7 @@ with voice:
                 data = stream.read(CHUNK)
                 frames.append(data)
         except Exception as e:
+            st.warning("Can't able to record your audio")
         finally:
             if stream is not None:
                 st.write("Done recording")
@@ -80,7 +81,6 @@ with voice:
                     except Exception as e:
                         print(e)
                         st.warning("OpenAI API key Error. Replace your key.")
-            st.warning("Can't able to record your audio")
         # st.write("Done recording")
         # stream.stop_stream()
         # stream.close()
