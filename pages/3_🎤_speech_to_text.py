@@ -45,8 +45,9 @@ voice,col1,speechtoText,col3,col4=st.columns(5)
 
 with voice:
     if st.button("Voice Input", use_container_width=True):
-        stream =None
+       
         try:
+            stream =None
             st.write("Listening...")
             p = pyaudio.PyAudio()
             stream = p.open(format=FORMAT,
