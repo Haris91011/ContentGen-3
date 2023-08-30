@@ -7,10 +7,14 @@ import pathlib
 import wave
 # from instadev import *
 
+
+
 st.set_page_config(
+    
     page_title="Ryan",
     page_icon="🐥"
 )
+
 st.sidebar.success("Select Above page")
 
 
@@ -19,6 +23,7 @@ openapi_key = st.secrets["open_ai_key"]
 openai.api_key = openapi_key
 
 SerpAPIWrapper.serp_api_key = st.secrets["serp_api_key"]
+st.sidebar.title('Side Panel')
 st.title('Content Generator Demo')
 prompt = st.text_input('Write Your Topic.')
 if 'instagram' not in st.session_state:
@@ -45,7 +50,7 @@ if 'blogPost' not in st.session_state:
 
 
 insta_button, twitter_button, facebook_button, linkedIn_button, blog_Title,blog_structure,blog_content,blog_image,blog_SEO,blog_Links = st.columns(10)
-st.sidebar.header('Side Panel')
+
 if prompt:
     with insta_button:
         if st.sidebar.button("Instagram", use_container_width=True):
@@ -105,17 +110,18 @@ if prompt:
         if st.sidebar.button("Blog Links", use_container_width=True):
             blogLink=topic_generate(prompt)
             st.session_state['blogLinks']=blog_repo_links(blogLink)
-if st.session_state['twitter']:
-    st.header("Twitter Post Generated")
-    # st.write("Twitter")
-    message(st.session_state['twitter'])
-    st.image(st.session_state['twitterImage'],caption='Generated Image',use_column_width=True)
-    # st.write(newRespone)
+
 if st.session_state['instagram']:
     st.header("Instagram Post Generated")
     # st.write("Instagram")
     message(st.session_state['instagram'])
     st.image(st.session_state['instagramImage'],caption='Generated Image',use_column_width=True)
+    # st.write(newRespone)
+if st.session_state['twitter']:
+    st.header("Twitter Post Generated")
+    # st.write("Twitter")
+    message(st.session_state['twitter'])
+    st.image(st.session_state['twitterImage'],caption='Generated Image',use_column_width=True)
     # st.write(newRespone)
 if st.session_state['facebook']:
     st.header("Facebook Post Generated")
@@ -142,15 +148,15 @@ if st.session_state['blogContent']:
     st.header("Blog Content Generated")
     # st.write("Blog Content")
     message(st.session_state['blogContent'])
+if st.session_state['blogSEO']:
+    st.header("Blog SEO words Generated")
+    # st.write("Blog SEO")
+    message(st.session_state['blogSEO'])
 if st.session_state['blogImage']:
     st.header("Blog Image Generated")
     # st.write("Blog Image")
     for i in range(0,3): 
         st.image(st.session_state['blogImage'][i],caption='Generated Image',use_column_width=True)
-if st.session_state['blogSEO']:
-    st.header("Blog SEO words Generated")
-    # st.write("Blog SEO")
-    message(st.session_state['blogSEO'])
 if st.session_state['blogLinks']:
     st.write("Blog Links")
     message(st.session_state['blogLinks'])
