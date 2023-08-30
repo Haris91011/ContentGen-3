@@ -60,26 +60,46 @@ with voice:
                 data = stream.read(CHUNK)
                 frames.append(data)
         except Exception as e:
+        finally:
+            if stream is not None:
+                st.write("Done recording")
+                stream.stop_stream()
+                stream.close()
+                p.terminate()
+                root_dir = pathlib.Path.cwd()
+                filename = root_dir / Path('try1.mp3')
+                with wave.open(str(filename), 'wb') as wf:
+                    wf.setnchannels(CHANNELS)
+                    wf.setsampwidth(p.get_sample_size(FORMAT))
+                    wf.setframerate(RATE)
+                    wf.writeframes(b''.join(frames))
+                audio_file = open(str(filename), "rb")
+                with st.spinner('Converting'):
+                    try:
+                        st.session_state['VoiceRecording'] = speechToText(audio_file)
+                    except Exception as e:
+                        print(e)
+                        st.warning("OpenAI API key Error. Replace your key.")
             st.warning("Can't able to record your audio")
-        st.write("Done recording")
-        stream.stop_stream()
-        stream.close()
-        p.terminate()
-        root_dir = pathlib.Path.cwd()
-        filename = root_dir / Path('try1.mp3')
-        with wave.open(str(filename), 'wb') as wf:
-            wf.setnchannels(CHANNELS)
-            wf.setsampwidth(p.get_sample_size(FORMAT))
-            wf.setframerate(RATE)
-            wf.writeframes(b''.join(frames))
-            wf.close()
-        audio_file = open(str(filename), "rb")
-        with st.spinner('Converting'):
-            try:
-                st.session_state['VoiceRecording']=speechToText(audio_file)          
-            except Exception as e:
-                print(e)
-                st.warning("OpenAI API key Error. Replace your key.")
+        # st.write("Done recording")
+        # stream.stop_stream()
+        # stream.close()
+        # p.terminate()
+        # root_dir = pathlib.Path.cwd()
+        # filename = root_dir / Path('try1.mp3')
+        # with wave.open(str(filename), 'wb') as wf:
+        #     wf.setnchannels(CHANNELS)
+        #     wf.setsampwidth(p.get_sample_size(FORMAT))
+        #     wf.setframerate(RATE)
+        #     wf.writeframes(b''.join(frames))
+        #     wf.close()
+        # audio_file = open(str(filename), "rb")
+        # with st.spinner('Converting'):
+        #     try:
+        #         st.session_state['VoiceRecording']=speechToText(audio_file)          
+        #     except Exception as e:
+        #         print(e)
+        #         st.warning("OpenAI API key Error. Replace your key.")
 if st.session_state['VoiceRecording']:
     with speechtoText:
         uploaded_file=st.sidebar.file_uploader("Upload an audio file", type=["mp3", "wav", "ogg"])
