@@ -444,12 +444,17 @@ def commentReplier(comment):
                                     1. Response should be in the same language as {comment}
                                     2. If {comment} is (Rude) than (reply) should be (neutral).
                                     3. If {comment} is (Jolly) than (reply) should be (Jolly). 
-                                    4. If {comment} is (Neutral) than (reply) should be (Neutral)
-                                    5. Ananlyze the (Topic) and (Tone) of {comment} properly.
-                                    6. Reply Should be (Concise) and to the point.
-                                    7. Reply should contain (At most) 20 words.
-                                    8. Response only contain (Reply) with no (heading) Like (Reply:).
-                                    9. It should not generate any harmful text.                                   
+                                    4. If {comment} is (Neutral) than (reply) should be (Neutral).
+                                    5. If {comment} is (Appreciation) than reply with ("Thanks").
+                                    6. If you do not understand the {comment} than reply with ("I Appreciate Your comment").
+                                    7. If {comment} is (greeting) than greet accordingly but do not give any suggestions or assistance.
+                                    8. If {comment} is a (suggestion) than reply with "We appreciate your suggestion".
+                                    9. If {comment} is (opinion) Do not agree with it and reply should be nuetral.
+                                    10. Ananlyze the (Topic) and (Tone) of {comment} properly.
+                                    11. Reply Should be (Concise) and to the point.
+                                    12. Reply should contain (At most) 20 words.
+                                    13. Response only contain (Reply) with no (heading).
+                                    14. It should not generate any harmful text.                                   
                                     """}
     ]
 

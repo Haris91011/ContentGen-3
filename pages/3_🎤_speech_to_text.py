@@ -5,15 +5,16 @@ import pyaudio
 from pathlib import Path
 import pathlib
 import wave
+from audio_recorder_streamlit import audio_recorder
 openapi_key = st.secrets["open_ai_key"]
 # openai.api_key = api_key.key
 openai.api_key = openapi_key
 
-CHUNK = 1024
-FORMAT = pyaudio.paInt16
-CHANNELS = 1
-RATE = 16000
-RECORD_SECONDS = 10
+# CHUNK = 1024
+# FORMAT = pyaudio.paInt16
+# CHANNELS = 1
+# RATE = 16000
+# RECORD_SECONDS = 10
 if 'insta' not in st.session_state:
     st.session_state['insta'] = []
     st.session_state['instaImage'] = []
@@ -39,95 +40,80 @@ if 'sppechToText' not in st.session_state:
 if 'VoiceRecording' not in st.session_state:
     st.session_state['VoiceRecording']=[]
 st.title('Speech to text')
-st.write('Enter the prompt using your voice command')
 insta_button, twitter_button, facebook_button, linkedIn_button, blog_Title,blog_structure,blog_content,blog_image,blog_SEO,blog_Links = st.columns(10)
 voice,col1,speechtoText,col3,col4=st.columns(5)
 
-with voice:
-    if st.button("Voice Input", use_container_width=True):
-       
-        try:
-            stream =None
-            st.write("Listening...")
-            p = pyaudio.PyAudio()
-            stream = p.open(format=FORMAT,
-                            channels=CHANNELS,
-                            rate=RATE,
-                            input=True,
-                            frames_per_buffer=CHUNK)
+# with voice:
+#     if st.button("Record", use_container_width=True):
+#         try:
+#             st.write("Try Saying")
+#             p = pyaudio.PyAudio()
+#             stream = p.open(format=FORMAT,
+#                             channels=CHANNELS,
+#                             rate=RATE,
+#                             input=True,
+#                             frames_per_buffer=CHUNK)
 
-            frames = []
-            for i in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
-                data = stream.read(CHUNK)
-                frames.append(data)
+#             frames = []
+#             for i in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
+#                 data = stream.read(CHUNK)
+#                 frames.append(data)
+#         except Exception as e:
+#             st.warning("Can't able to record your audio")
+#         st.write("Done recording")
+#         stream.stop_stream()
+#         stream.close()
+#         p.terminate()
+#         root_dir = pathlib.Path.cwd()
+#         filename = root_dir / Path('try1.mp3')
+#         with wave.open(str(filename), 'wb') as wf:
+#             wf.setnchannels(CHANNELS)
+#             wf.setsampwidth(p.get_sample_size(FORMAT))
+#             wf.setframerate(RATE)
+#             wf.writeframes(b''.join(frames))
+#             wf.close()
+#         audio_file = open(str(filename), "rb")
+#         with st.spinner('Converting'):
+#             try:
+#                 st.session_state['VoiceRecording']=speechToText(audio_file)          
+#             except Exception as e:
+#                 print(e)
+#                 st.warning("OpenAI API key Error. Replace your key.")
+st.header("press to record audio")
+audio_bytes = audio_recorder(
+    sample_rate=41_000,
+    pause_threshold=60.0,
+    text="",
+    recording_color="#e8b62c",
+    neutral_color="#6aa36f",
+    icon_size="6x",)
+if audio_bytes:
+    # audio=st.audio(audio_bytes, format="audio/wav")
+    with open("test.wav", "wb") as f:
+        f.write(audio_bytes)
+        st.success("Audio saved successfully.")
+    filename="test.wav"
+    audio_file = open(str(filename), "rb")
+    with st.spinner('Converting'):
+        try:
+            st.session_state['VoiceRecording']=speechToText(audio_file)          
         except Exception as e:
-            st.warning("Can't able to record your audio")
-        # finally:
-        #     if stream is not None:
-        #         st.write("Done recording")
-        #         stream.stop_stream()
-        #         stream.close()
-        #         p.terminate()
-        #         root_dir = pathlib.Path.cwd()
-        #         filename = root_dir / Path('try1.mp3')
-        #         with wave.open(str(filename), 'wb') as wf:
-        #             wf.setnchannels(CHANNELS)
-        #             wf.setsampwidth(p.get_sample_size(FORMAT))
-        #             wf.setframerate(RATE)
-        #             wf.writeframes(b''.join(frames))
-        #         audio_file = open(str(filename), "rb")
-        #         with st.spinner('Converting'):
-        #             try:
-        #                 st.session_state['VoiceRecording'] = speechToText(audio_file)
-        #             except Exception as e:
-        #                 print(e)
-        #                 st.warning("OpenAI API key Error. Replace your key.")
-        st.write("Done recording")
-        stream.stop_stream()
-        stream.close()
-        p.terminate()
-        root_dir = pathlib.Path.cwd()
-        filename = root_dir / Path('try1.mp3')
-        with wave.open(str(filename), 'wb') as wf:
-            wf.setnchannels(CHANNELS)
-            wf.setsampwidth(p.get_sample_size(FORMAT))
-            wf.setframerate(RATE)
-            wf.writeframes(b''.join(frames))
-            wf.close()
-        audio_file = open(str(filename), "rb")
-        with st.spinner('Converting'):
-            try:
-                st.session_state['VoiceRecording']=speechToText(audio_file)          
-            except Exception as e:
-                print(e)
-                st.warning("OpenAI API key Error. Replace your key.")
+            print(e)
+            st.warning("OpenAI API key Error. Replace your key.")
 with speechtoText:
-    uploaded_file=st.sidebar.file_uploader("Upload an audio file", type=["mp3", "wav", "ogg"])
-    if uploaded_file:
-        with open("uploaded_audio.wav", "wb") as f:
-            f.write(uploaded_file.read())
-        filename="uploaded_audio.wav"
-        audio_file = open(str(filename), "rb")
-        with st.spinner('Converting'):
-            try:
-                st.session_state['SpeechToText']=speechToText(audio_file)
-            except Exception as e:
-                print(e)
-                st.warning("OpenAI API key Error. Replace your key.")
+        uploaded_file=st.sidebar.file_uploader("Upload an audio file", type=["mp3", "wav", "ogg"])
+        if uploaded_file:
+            with open("uploaded_audio.wav", "wb") as f:
+                f.write(uploaded_file.read())
+            filename="uploaded_audio.wav"
+            audio_file = open(str(filename), "rb")
+            with st.spinner('Converting'):
+                try:
+                    st.session_state['SpeechToText']=speechToText(audio_file)
+                except Exception as e:
+                    print(e)
+                    st.warning("OpenAI API key Error. Replace your key.")
 if st.session_state['VoiceRecording']:
-    # with speechtoText:
-    #     uploaded_file=st.sidebar.file_uploader("Upload an audio file", type=["mp3", "wav", "ogg"])
-    #     if uploaded_file:
-    #         with open("uploaded_audio.wav", "wb") as f:
-    #             f.write(uploaded_file.read())
-    #         filename="uploaded_audio.wav"
-    #         audio_file = open(str(filename), "rb")
-    #         with st.spinner('Converting'):
-    #             try:
-    #                 st.session_state['SpeechToText']=speechToText(audio_file)
-    #             except Exception as e:
-    #                 print(e)
-    #                 st.warning("OpenAI API key Error. Replace your key.")
     with insta_button:
         if st.sidebar.button("Instagram", use_container_width=True):
             # global prompt_
@@ -190,7 +176,7 @@ if st.session_state['VoiceRecording']:
 
 
 if st.session_state['VoiceRecording']:
-    st.header("Transcribed Text")
+    st.header("Generated Voice")
     message(st.session_state['VoiceRecording'])
 if st.session_state['SpeechToText']:
     st.header("Speech to Text")
